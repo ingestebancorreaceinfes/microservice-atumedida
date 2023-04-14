@@ -1,9 +1,8 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
 import { documentTypes, grades } from './data/index';
-import { ErrorMessages } from 'src/common/enum/error-messages.enum';
 import { CreateStudentDto } from './dto/create-student.dto';
 
 @Injectable()
