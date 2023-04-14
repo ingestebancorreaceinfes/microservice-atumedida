@@ -34,7 +34,7 @@ export class StudentService {
             .leftJoin(
                 "cities.state",
                 "state",
-              )
+            )
             .where("state_id = :id", { id })
             .execute();
         }catch(error){
