@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { States } from "./states.entity";
 
 @Entity('cities')
 export class Cities {
@@ -9,8 +10,11 @@ export class Cities {
     @Column()
     name: string;
 
-
     @Column()
     state_id: number;
+
+    @ManyToOne(type => States, state => state.cities)
+    @JoinColumn({ name: 'state_id' }) //referencia de la columna
+    state: States;
 
 }

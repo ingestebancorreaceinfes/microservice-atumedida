@@ -7,17 +7,18 @@ import { CreateStudentDto } from './dto/create-student.dto';
 
 @Injectable()
 export class StudentService {
+    
     constructor(
         @InjectRepository(States) private readonly statesRepository:Repository<States>,
         @InjectRepository(Cities) private readonly citiesRepository:Repository<Cities>,
-        @InjectRepository(Student) private readonly studentRepository:Repository<Student>,
+        @InjectRepository(Student) private readonly studentRepository:Repository<Student>
     ){}
     
     getDocumentTypes(): string {
         return JSON.stringify(documentTypes);//Convierte un Object JS a JSON
     }
     
-    getDepartaments(): Promise<States[]> {
+    getStates(): Promise<States[]> {
         return this.statesRepository.find();
     }
 
@@ -25,11 +26,21 @@ export class StudentService {
         return this.citiesRepository.find();
     }
 
-    // getDepartamentById(id: string): Promise<States> {
-    //     const state = this.statesRepository.findOne({ where: { +id } });
-    //     if(!state) throw new NotFoundException();
-    //     return state;
-    // }
+    async getStateById(id: string) {
+        try {
+            return await this.citiesRepository
+            .createQueryBuilder('cities')
+            .select('cities.id, cities.name')
+            .leftJoin(
+                "cities.state",
+                "state",
+              )
+            .where("state_id = :id", { id })
+            .execute();
+        }catch(error){
+            console.log(error);
+        }
+    }
     
     getGrades(): string {
         return JSON.stringify(grades);

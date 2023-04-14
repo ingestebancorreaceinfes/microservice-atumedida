@@ -15,19 +15,19 @@ export class StudentController {
     return this.studentService.getDocumentTypes();
   }
 
-  @Get('departaments')
-  getDepartaments() {
-    return this.studentService.getDepartaments();
+  @Get('states')
+  getStates() {
+    return this.studentService.getStates();
   }
-
-  // @Get('departament/:id')
-  // getDepartamentById(@Param('id') id : string ) {
-  //   return this.studentService.getDepartamentById(id);
-  // }
 
   @Get('cities')
   getCities() {
     return this.studentService.getCities();
+  }
+
+  @Get('cities/state/:id')
+  getStateById(@Param('id') id : string ) {
+    return this.studentService.getStateById(id);
   }
 
   @Get('grades')

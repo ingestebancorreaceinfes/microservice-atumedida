@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Cities } from "./cities.entity";
 
 @Entity('states')
 export class States {
@@ -9,4 +10,6 @@ export class States {
     @Column()
     name: string;
 
+    @OneToMany(type => Cities, cities => cities.state)
+    cities: Cities[]
 }
