@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { StudentSchema } from './schema/student.shema';
 
 @ApiTags('Student')
 @Controller()
@@ -40,7 +41,7 @@ export class StudentController {
     return this.studentService.getGrades();
   }
 
-  @ApiCreatedResponse({ description: 'Created Succesfully' })
+  @ApiResponse({status:201, description: 'Created Succesfully',schema:{type:'object',example:StudentSchema}})
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @Post('student')
   studentRegister(@Body() data: CreateStudentDto) {
