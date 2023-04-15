@@ -1,10 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { Student } from './entities';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ApiCreatedResponse } from '@nestjs/swagger';
 
-@Controller('student')
+@Controller()
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
@@ -25,7 +24,7 @@ export class StudentController {
     return this.studentService.getCities();
   }
 
-  @Get('cities/state/:id')
+  @Get('state/:id/cities')
   getStateById(@Param('id') id : string ) {
     return this.studentService.getStateById(id);
   }
@@ -36,7 +35,7 @@ export class StudentController {
   }
 
   @ApiCreatedResponse({ description: 'Created Succesfully' })
-  @Post('')
+  @Post('student')
   studentRegister(@Body() data: CreateStudentDto) {
     return this.studentService.studentRegister(data);
   }

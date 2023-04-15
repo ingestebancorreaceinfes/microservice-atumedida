@@ -1,4 +1,5 @@
-import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateStudentDto {
 
@@ -38,7 +39,9 @@ export class CreateStudentDto {
     @IsNotEmpty()
     documentnumber: string;
 
+    @IsOptional()
     @IsDateString()
-    @IsNotEmpty()
+    @Type(() => Date)
+    // @IsNotEmpty()
     dateofbirth: Date;
 }

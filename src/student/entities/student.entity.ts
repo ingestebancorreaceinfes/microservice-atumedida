@@ -34,8 +34,7 @@ export class Student {
     @Column('text', { unique: true })
     documentnumber: string;
 
-    @Type(() => Date)
-    @Column('text')
+    @Column('date')
     dateofbirth: Date;
 
     @BeforeInsert()
