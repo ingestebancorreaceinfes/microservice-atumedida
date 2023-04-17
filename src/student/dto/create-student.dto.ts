@@ -21,7 +21,7 @@ export class CreateStudentDto {
     lastname: string;
 
     @ApiProperty({
-        type: String,
+        type: Number,
         description: 'This is a required property',
     })
     @IsNumber()
@@ -45,7 +45,7 @@ export class CreateStudentDto {
     user_uuid: string;
 
     @ApiProperty({
-        type: String,
+        type: Number,
         description: 'This is a required property',
     })
     @IsNumber()
@@ -53,7 +53,7 @@ export class CreateStudentDto {
     state_id: number;
 
     @ApiProperty({
-        type: String,
+        type: Number,
         description: 'This is a required property',
     })
     @IsNumber()
@@ -61,7 +61,7 @@ export class CreateStudentDto {
     city_id: number;
 
     @ApiProperty({
-        type: String,
+        type: Number,
         description: 'This is a required property',
     })
     @IsNumber()
@@ -77,7 +77,7 @@ export class CreateStudentDto {
     documentnumber: string;
 
     @ApiPropertyOptional({
-        type: String,
+        type: Date,
         description: 'This is an optional property',
     })
     @IsOptional()
