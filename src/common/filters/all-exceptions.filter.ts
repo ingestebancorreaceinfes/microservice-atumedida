@@ -20,7 +20,7 @@ import { ErrorMessages } from '../enum/error-messages.enum';
           : HttpStatus.INTERNAL_SERVER_ERROR;
  
       let requestException = {}
-      let httpMessage = ErrorMessages.INTERNAL_SERVER_ERROR
+      let httpMessage = ErrorMessages.APPLICATION_ERROR
 
       if(exception instanceof HttpException){
           const reqException = exception.getResponse();
