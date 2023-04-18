@@ -6,7 +6,6 @@ import { StudentSchema } from './schema/student.shema';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
 import { Headers } from '@nestjs/common';
 import { AuthnGuard } from 'src/auth/guards/auth.guard';
-import { TokenSchema } from './schema/token.schema';
 
 @ApiTags('Student')
 @Controller()
