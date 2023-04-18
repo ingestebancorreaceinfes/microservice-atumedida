@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
 import { documentTypes, grades } from './data/index';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ErrorMessages } from 'src/common/enum/error-messages.enum';
 
 @Injectable()
 export class StudentService {
@@ -52,20 +53,23 @@ export class StudentService {
     
     async studentRegister(token: string, createStudentDto: CreateStudentDto) {
         type Payload = {
-            uuid: string
+            uuid: string,
+            username: string,
         }
         const data = this.jwtService.decode(token);
 
-        const { uuid } = data as Payload;
+        const { uuid, username } = data as Payload;
         
         const isRegister = await this.findStudentByUUID(uuid);
 
         if(!isRegister) {
             const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
             newStudent.user_uuid = uuid;
-            return await this.studentRepository.save(newStudent);
+            newStudent.email = username;
+            this.studentRepository.save(newStudent);
+            return HttpStatus.CREATED;//return código estado '201', message
         }else{  
-            throw new BadRequestException();
+            throw new BadRequestException(ErrorMessages.BAD_REQUEST);
         }
     }
 

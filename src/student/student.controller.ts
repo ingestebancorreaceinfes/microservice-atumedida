@@ -49,7 +49,7 @@ export class StudentController {
     return this.studentService.getGrades();
   }
 
-  @ApiResponse({status:201, description: ErrorMessages.CREATED,schema:{type:'object',example:StudentSchema}})
+  @ApiResponse({status:201, description: ErrorMessages.CREATED, schema:{type:'object',example:StudentSchema}})
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @UseGuards(AuthnGuard) //Validar el token
