@@ -50,7 +50,7 @@ export class StudentController {
   }
 
   @ApiResponse({status:201, description: ErrorMessages.CREATED, schema:{type:'object',example:StudentSchema}})
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBadRequestResponse({ description: ErrorMessages.BAD_REQUEST })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @UseGuards(AuthnGuard) //Validar el token
   @Post('student')
