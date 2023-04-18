@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
 import { documentTypes, grades } from './data/index';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class StudentService {
@@ -11,7 +12,8 @@ export class StudentService {
     constructor(
         @InjectRepository(States) private readonly statesRepository:Repository<States>,
         @InjectRepository(Cities) private readonly citiesRepository:Repository<Cities>,
-        @InjectRepository(Student) private readonly studentRepository:Repository<Student>
+        @InjectRepository(Student) private readonly studentRepository:Repository<Student>,
+        private readonly jwtService: JwtService
     ){}
     
     getDocumentTypes(): string {
@@ -38,7 +40,8 @@ export class StudentService {
             .where("state_id = :id", { id })
             .execute();
         }catch(error){
-            console.log(error);
+            const logger = new Logger("StudentServcie");
+            logger.log(error);
         }
     }
     
@@ -46,12 +49,20 @@ export class StudentService {
         return JSON.stringify(grades);
     }
 
-    async studentRegister(createStudentDto: CreateStudentDto) {
-        const { user_uuid } = createStudentDto; 
-        const isRegister = await this.findStudentByUUID(user_uuid);
-        console.log(isRegister);
+    
+    async studentRegister(token: string, createStudentDto: CreateStudentDto) {
+        type Payload = {
+            uuid: string
+        }
+        const data = this.jwtService.decode(token);
+
+        const { uuid } = data as Payload;
+        
+        const isRegister = await this.findStudentByUUID(uuid);
+
         if(!isRegister) {
             const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
+            newStudent.user_uuid = uuid;
             return await this.studentRepository.save(newStudent);
         }else{  
             throw new BadRequestException();

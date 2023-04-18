@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { ApiBadRequestResponse, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StudentSchema } from './schema/student.shema';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
+import { Headers } from '@nestjs/common';
+import { AuthnGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Student')
 @Controller()
@@ -50,9 +52,11 @@ export class StudentController {
   @ApiResponse({status:201, description: ErrorMessages.CREATED,schema:{type:'object',example:StudentSchema}})
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
+  @UseGuards(AuthnGuard) //Validar el token
   @Post('student')
-  studentRegister(@Body() data: CreateStudentDto) {
-    return this.studentService.studentRegister(data);
+  studentRegister(@Headers('Authorization') request: any,  @Body() data: CreateStudentDto) {
+    const jwt = request.replace('Bearer ', '');
+    return this.studentService.studentRegister(jwt, data);
   }
 
 }

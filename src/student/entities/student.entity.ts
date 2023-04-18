@@ -37,6 +37,9 @@ export class Student {
     @Column('date')
     dateofbirth: Date;
 
+    @Column('text')
+    schoolname: string;
+
     @BeforeInsert()
     checkFieldsBeforeInsert() {
         this.email = this.email.toLowerCase().trim();

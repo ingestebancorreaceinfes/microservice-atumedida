@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateStudentDto {
 
@@ -25,7 +25,7 @@ export class CreateStudentDto {
         description: 'This is a required property',
     })
     @IsNumber()
-    @IsNotEmpty()
+    @IsOptional()
     grade_id: number;
 
     @ApiProperty({
@@ -35,14 +35,6 @@ export class CreateStudentDto {
     @IsEmail()
     @IsNotEmpty()
     email: string;
-
-    @ApiProperty({
-        type: String,
-        description: 'This is a required property',
-    })
-    @IsString()
-    @IsNotEmpty()
-    user_uuid: string;
 
     @ApiProperty({
         type: Number,
@@ -80,9 +72,15 @@ export class CreateStudentDto {
         type: Date,
         description: 'This is an optional property',
     })
-    @IsOptional()
-    @IsDateString()
+    @IsDate()
     @Type(() => Date)
-    // @IsNotEmpty()
+    @IsNotEmpty()
     dateofbirth: Date;
+
+    @ApiPropertyOptional({
+        type: String,
+        description: 'This is an optional property',
+    })
+    @IsOptional()
+    schoolname: string;
 }

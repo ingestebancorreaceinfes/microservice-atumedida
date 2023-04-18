@@ -3,4 +3,5 @@ export enum ErrorMessages {
     BAD_REQUEST = '',
     CREATED = 'Created Succesfully',
     OK_RESPONSE = 'The resource was returned successfully',
+    NOT_VALID_TOKEN = ''
 }
