@@ -55,10 +55,10 @@ export class StudentService {
         type Payload = {
             uuid: string,
             username: string,
+            name: string
         }
         const data = this.jwtService.decode(token);
-
-        const { uuid, username } = data as Payload;
+        const { uuid, username, name } = data as Payload;
         
         const isRegister = await this.findStudentByUUID(uuid);
 
@@ -66,8 +66,11 @@ export class StudentService {
             const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
             newStudent.user_uuid = uuid;
             newStudent.email = username;
+            const arrayFullName = name.split(" ", 3);
+            newStudent.name = arrayFullName[0];
+            newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
             this.studentRepository.save(newStudent);
-            return HttpStatus.CREATED;//return código estado '201', message
+            return HttpStatus.CREATED;
         }else{  
             throw new BadRequestException(ErrorMessages.BAD_REQUEST);
         }

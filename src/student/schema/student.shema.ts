@@ -1,6 +1,4 @@
 export const StudentSchema = {
-    "name": "Esteban",
-    "lastname": "Correa",
     "grade_id": 11,
     "state_id": 6,
     "city_id": 152,
