@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
@@ -69,7 +69,7 @@ export class StudentService {
             const arrayFullName = name.split(" ", 3);
             newStudent.name = arrayFullName[0];
             newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
-            // this.studentRepository.save(newStudent);
+            this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
         }else{  
             throw new BadRequestException(ErrorMessages.BAD_REQUEST);
