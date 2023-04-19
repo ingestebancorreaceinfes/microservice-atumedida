@@ -50,7 +50,8 @@ export class StudentController {
   }
 
   @ApiResponse({status:201, description: ErrorMessages.CREATED, schema:{type:'object',example:StudentSchema}})
-  @ApiBadRequestResponse({ description: ErrorMessages.BAD_REQUEST })
+  @ApiBadRequestResponse({ status: 400, description: ErrorMessages.BAD_REQUEST })
+  @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
   @UseGuards(AuthnGuard) //Validar el token
