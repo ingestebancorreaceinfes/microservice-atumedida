@@ -70,7 +70,7 @@ export class StudentService {
             newStudent.name = arrayFullName[0];
             newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
             console.log(createStudentDto.dateofbirth);
-            this.studentRepository.save(newStudent);
+            // this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
         }else{  
             throw new BadRequestException(ErrorMessages.BAD_REQUEST);
