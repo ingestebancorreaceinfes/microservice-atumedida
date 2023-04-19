@@ -69,6 +69,7 @@ export class StudentService {
             const arrayFullName = name.split(" ", 3);
             newStudent.name = arrayFullName[0];
             newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
+            console.log(createStudentDto.dateofbirth);
             this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
         }else{  

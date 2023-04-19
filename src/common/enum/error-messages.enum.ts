@@ -4,5 +4,5 @@ export enum ErrorMessages {
     CREATED = 'Created Succesfully',
     OK_RESPONSE = 'The resource was returned successfully',
     NOT_VALID_TOKEN = 'Invalid Token',
-    FORBIDDEN = 'You do not have permission to access / on this server'
+    FORBIDDEN = 'Forbbiden resource'
 }
