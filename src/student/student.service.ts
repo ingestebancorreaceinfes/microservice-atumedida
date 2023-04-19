@@ -70,7 +70,7 @@ export class StudentService {
                 const arrayFullName = name.split(" ", 3);
                 newStudent.name = arrayFullName[0];
                 newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
-                this.studentRepository.save(newStudent);
+                // this.studentRepository.save(newStudent);
                 return HttpStatus.CREATED;
             }else{  
                 throw new BadRequestException(ErrorMessages.BAD_REQUEST);
