@@ -3,5 +3,6 @@ export enum ErrorMessages {
     BAD_REQUEST = 'User is already registered',
     CREATED = 'Created Succesfully',
     OK_RESPONSE = 'The resource was returned successfully',
-    NOT_VALID_TOKEN = 'Invalid Token'
+    NOT_VALID_TOKEN = 'Invalid Token',
+    FORBIDDEN = 'You do not have permission to access / on this server'
 }
