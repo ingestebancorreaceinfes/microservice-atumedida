@@ -6,7 +6,6 @@ import { documentTypes, grades } from './data/index';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
-import * as moment from 'moment';
 
 @Injectable()
 export class StudentService {
