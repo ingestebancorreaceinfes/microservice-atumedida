@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext,ForbiddenException,Injectable,Logger,UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext,Injectable,Logger,UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { ErrorMessages } from '../../common/enum/error-messages.enum';
@@ -37,9 +37,9 @@ export class AuthnGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const token = request.headers.authorization.split(' ')[1];//split divide un objeto en un array
-    console.log(request.headers.authorization);
-    return token;
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];//split divide un objeto en un array
+    console.log(token);
+    return type === 'Bearer' ? token : undefined;
   }
 
 }
