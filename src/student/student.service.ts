@@ -6,6 +6,7 @@ import { documentTypes, grades } from './data/index';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
+import * as moment from 'moment';
 
 @Injectable()
 export class StudentService {
@@ -52,6 +53,7 @@ export class StudentService {
 
     
     async studentRegister(token: string, createStudentDto: CreateStudentDto) {
+
         type Payload = {
             uuid: string,
             username: string,
@@ -69,8 +71,7 @@ export class StudentService {
             const arrayFullName = name.split(" ", 3);
             newStudent.name = arrayFullName[0];
             newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
-            console.log(createStudentDto.dateofbirth);
-            // this.studentRepository.save(newStudent);
+            this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
         }else{  
             throw new BadRequestException(ErrorMessages.BAD_REQUEST);
@@ -81,5 +82,4 @@ export class StudentService {
         const student = await this.studentRepository.findOne( { where: {user_uuid}} );
         return student;
     }
-
 }
