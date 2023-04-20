@@ -65,13 +65,14 @@ export class StudentService {
 
         if(!isRegister) {
             const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
+            console.log(newStudent.schoolname);
             newStudent.user_uuid = uuid;
             newStudent.email = username;
             const arrayFullName = name.split(" ", 3);
             newStudent.name = arrayFullName[0];
             newStudent.lastname = arrayFullName[1];
             console.log(typeof newStudent.documentnumber);
-            this.studentRepository.save(newStudent);
+            // this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
         }else{  
             throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
