@@ -53,6 +53,7 @@ export class StudentController {
   @ApiBadRequestResponse({ status: 400, description: ErrorMessages.BAD_REQUEST })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
+  @ApiResponse({ status:409, description: ErrorMessages.CONFLICT_RESPONSE })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
   @UseGuards(AuthnGuard) //Validar el token

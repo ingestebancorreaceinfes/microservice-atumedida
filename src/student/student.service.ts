@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
@@ -73,7 +73,7 @@ export class StudentService {
             this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
         }else{  
-            throw new BadRequestException(ErrorMessages.BAD_REQUEST);
+            throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
         }
     }
 
