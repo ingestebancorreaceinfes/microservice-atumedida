@@ -65,7 +65,6 @@ export class StudentService {
 
         if(!isRegister) {
             const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
-            console.log(newStudent.schoolname);
             newStudent.user_uuid = uuid;
             newStudent.email = username;
             const arrayFullName = name.split(" ", 3);
