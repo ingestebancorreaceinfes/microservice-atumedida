@@ -69,9 +69,7 @@ export class StudentService {
             newStudent.email = username;
             const arrayFullName = name.split(" ", 3);
             newStudent.name = arrayFullName[0];
-            newStudent.lastname = arrayFullName[1]+" "+arrayFullName[2];
-            // const documentNumberParse = newStudent.documentnumber.toString();
-            // newStudent.documentnumber = documentNumberParse;
+            newStudent.lastname = arrayFullName[1];
             console.log(typeof newStudent.documentnumber);
             this.studentRepository.save(newStudent);
             return HttpStatus.CREATED;
