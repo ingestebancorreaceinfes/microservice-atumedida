@@ -52,7 +52,6 @@ export class StudentService {
 
     
     async studentRegister(token: string, createStudentDto: CreateStudentDto) {
-
         type Payload = {
             uuid: string,
             username: string,

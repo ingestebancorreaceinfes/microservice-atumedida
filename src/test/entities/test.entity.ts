@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class Test {
 
     @PrimaryGeneratedColumn()
-    id: string
+    id: string;
 
     @Column('text')
     name: string;

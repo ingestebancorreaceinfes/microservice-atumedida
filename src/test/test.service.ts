@@ -21,12 +21,13 @@ export class TestService {
   
       const data = this.jwtService.decode(token);
       const { uuid } = data as Payload;
-      console.log(uuid);
-      const testsStudent = await this.testRepository
-      .query(`SELECT * 
+
+      const query = `SELECT * 
       FROM tests t 
       INNER JOIN vw_tests_applications_actives vtaa ON vtaa.test_id = t.id 
-      LEFT JOIN students_tests st ON t.id = st.test_id AND st.student_id = '${uuid}';`);
+      LEFT JOIN students_tests st ON t.id = st.test_id AND st.student_id = '5608f43a-a461-4848-ac12-3537ebceae81';`;
+
+      const testsStudent = await this.testRepository.query(query);
       return testsStudent;
     }catch(error){
       const logger = new Logger('TestService');
