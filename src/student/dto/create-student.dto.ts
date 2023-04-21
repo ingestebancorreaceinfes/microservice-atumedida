@@ -5,6 +5,22 @@ import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-valida
 export class CreateStudentDto {
 
     @ApiProperty({
+        type: String,
+        description: 'This is a required property',
+    })
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'This is a required property',
+    })
+    @IsString()
+    @IsNotEmpty()
+    lastname: string;
+
+    @ApiProperty({
         type: Number,
         description: 'This is a required property',
     })
