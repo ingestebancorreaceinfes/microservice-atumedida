@@ -11,11 +11,12 @@ export class TestController {
   constructor(private readonly testService: TestService) {}
 
   @ApiResponse({ status: 200, description: ErrorMessages.OK_RESPONSE })
+  @ApiResponse({ status: 400, description: ErrorMessages.BAD_REQUEST })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
-  // @UseGuards(AuthnGuard)
+  @UseGuards(AuthnGuard)
   @Get('student/test')
   findStudentTest(@Headers('Authorization') request: any ) {
     const jwt = request.replace('Bearer ', '');
