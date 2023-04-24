@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
@@ -59,18 +59,30 @@ export class StudentService {
         }
         const data = this.jwtService.decode(token);
         const { uuid, username } = data as Payload;
-        
-        const isRegister = await this.findStudentByUUID(uuid);
 
-        if(!isRegister) {
-            const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
-            newStudent.user_uuid = uuid;
-            newStudent.email = username;
-            this.studentRepository.save(newStudent);
-            return HttpStatus.CREATED;
-        }else{  
-            throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
+        if(this.checkIfValidUUID(uuid)){
+            const isRegister = await this.findStudentByUUID(uuid);
+            if(!isRegister) {
+                const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
+                newStudent.user_uuid = uuid;
+                newStudent.email = username;
+                this.studentRepository.save(newStudent);
+                return newStudent.id;
+            }else{  
+                throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
+            }
+        }else{
+            const logger = new Logger('TestService');
+            logger.error('uuid does not a valid UUID');
+            throw new BadRequestException(ErrorMessages.BAD_REQUEST);
         }
+    }
+
+    checkIfValidUUID(str: string) {
+        // Regular expression to check if string is a valid UUID
+        const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+      
+        return regexExp.test(str);
     }
 
     async findStudentByUUID(user_uuid: string) {
