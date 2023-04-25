@@ -56,7 +56,7 @@ export class StudentController {
   @ApiResponse({ status:409, description: ErrorMessages.CONFLICT_RESPONSE })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
-  // @UseGuards(AuthnGuard) //Validar el token
+  @UseGuards(AuthnGuard) //Validar el token
   @Post('student')
   studentRegister(@Headers('Authorization') request: any,  @Body() data: CreateStudentDto) {
     const jwt = request.replace('Bearer ', '');

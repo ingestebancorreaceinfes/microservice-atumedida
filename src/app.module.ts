@@ -3,6 +3,8 @@ import { StudentModule } from './student/student.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TestModule } from './test/test.module';
+import { StudentTestModule } from './student_test/student_test.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { TestModule } from './test/test.module';
       autoLoadEntities:true
     }),
     StudentModule,
-    TestModule
+    TestModule,
+    StudentTestModule,
+    AuthModule
   ]
 })
 export class AppModule {}

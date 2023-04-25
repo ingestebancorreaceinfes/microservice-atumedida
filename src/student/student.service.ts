@@ -67,7 +67,7 @@ export class StudentService {
                 newStudent.user_uuid = uuid;
                 newStudent.email = username;
                 this.studentRepository.save(newStudent);
-                return newStudent.id;
+                return HttpStatus.CREATED;
             }else{  
                 throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
             }
