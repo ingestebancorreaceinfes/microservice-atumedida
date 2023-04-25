@@ -18,7 +18,7 @@ export class StudentTestController {
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
-  // @UseGuards(AuthnGuard) 
+  @UseGuards(AuthnGuard) 
   @Post('student-test')
   saveStudentTest(@Headers('Authorization') request: any,@Body() data: CreateStudentTestDto) {
     const jwt = request.replace('Bearer ', '');
