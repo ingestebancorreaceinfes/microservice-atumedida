@@ -9,7 +9,7 @@ export class TestApplication {
     @Column('uuid')
     test_id: string;
 
-    @Column('number')
+    @Column('int4')
     typescore_id: number;
 
 }
