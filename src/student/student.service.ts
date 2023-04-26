@@ -85,8 +85,9 @@ export class StudentService {
         return regexExp.test(str);
     }
 
-    async findStudentByUUID(user_uuid: string) {
-        const student = await this.studentRepository.findOne( { where: {user_uuid}} );
-        return student;
+    async findStudentByUUID(user_uuid : string){
+        const { id } = await this.studentRepository.findOne({ where: { user_uuid } });
+        if(!id) throw new BadRequestException('Not found student');
+        return id;
     }
 }
