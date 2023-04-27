@@ -18,9 +18,8 @@ export class TestDetailController {
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
   @UseGuards(AuthnGuard) 
   @Get('test/:id/score')
-  testScore(@Headers('Authorization') request: any, @Param('id') id: string){
-    const jwt = request.replace('Bearer ', '');
-    this.testDetailService.testScore(jwt,id);
+  getResults(@Param('id') id: string){
+    this.testDetailService.getResults(id);
   }
 
 }

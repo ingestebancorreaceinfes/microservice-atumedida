@@ -21,6 +21,9 @@ export class StudentTest {
     @Column('timestamp')
     ended_at: Date;
 
+    @Column('float')
+    total_score: number;
+
     @Column('text')
     responses: string;
 

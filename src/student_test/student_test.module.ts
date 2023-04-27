@@ -5,13 +5,17 @@ import { StudentTest } from './entities/student_test.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { StudentModule } from 'src/student/student.module';
+import { TestApplicationModule } from 'src/test_application/test_application.module';
+import { TestDetailModule } from 'src/test_detail/test_detail.module';
 
 @Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([StudentTest]),
     AuthModule,
-    StudentModule
+    StudentModule,
+    TestApplicationModule,
+    TestDetailModule
   ],
   controllers: [StudentTestController],
   providers: [StudentTestService],
