@@ -11,7 +11,7 @@ import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 export class TestDetailController {
   constructor(private readonly testDetailService: TestDetailService) {}
 
-  @ApiOkResponse({ description: SuccessMessages.OK_RESPONSE })
+  @ApiOkResponse({ description: SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
