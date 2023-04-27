@@ -47,4 +47,8 @@ export class StudentTestService {
     return StudentTestModule.globalResponses;//2. Utilizar variable global en el servicio
   }
 
+  async saveTotalScore(){
+    const totalScore = await this.studentTestRepository.create();
+  }
+
 }

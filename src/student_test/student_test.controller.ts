@@ -13,7 +13,7 @@ import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 export class StudentTestController {
   constructor(private readonly studentTestService: StudentTestService) {}
 
-  @ApiResponse({status:201, description: SuccessMessages.CREATED, schema:{type:'object',example:StudentTestSchema}})
+  @ApiResponse({status:201, description: SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST, schema:{type:'object',example:StudentTestSchema}})
   @ApiBadRequestResponse({ status: 400, description: ErrorMessages.BAD_REQUEST })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
