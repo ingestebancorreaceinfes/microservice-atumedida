@@ -7,6 +7,7 @@ import { TestApplication } from './entities/test_application.entity';
   imports: [
     TypeOrmModule.forFeature([TestApplication])
   ],
-  providers: [TestApplicationService]
+  providers: [TestApplicationService],
+  exports: [TestApplicationService]
 })
 export class TestApplicationModule {}

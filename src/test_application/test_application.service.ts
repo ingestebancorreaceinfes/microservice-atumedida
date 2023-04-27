@@ -12,8 +12,8 @@ export class TestApplicationService {
   ){}
 
   async findTypeScore(testId: string) {
-    const typeScore = await this.testApplicationRepository.findOne({ where: { test_id: testId }  });
-    return typeScore;
+    const { typescore_id } = await this.testApplicationRepository.findOne({ where: { test_id: testId }  });
+    return typescore_id;
   }
   
 }

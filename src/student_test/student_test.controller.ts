@@ -6,19 +6,21 @@ import { ErrorMessages } from 'src/common/enum/error-messages.enum';
 import { StudentTestSchema } from './schema/student-test.schema';
 import { Headers } from '@nestjs/common';
 import { AuthnGuard } from 'src/auth/guards/auth.guard';
+import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 
 @ApiTags('StudentTest')
 @Controller()
 export class StudentTestController {
   constructor(private readonly studentTestService: StudentTestService) {}
 
-  @ApiResponse({status:201, description: ErrorMessages.CREATED, schema:{type:'object',example:StudentTestSchema}})
+  @ApiResponse({status:201, description: SuccessMessages.CREATED, schema:{type:'object',example:StudentTestSchema}})
   @ApiBadRequestResponse({ status: 400, description: ErrorMessages.BAD_REQUEST })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
+  @ApiResponse({ status:409, description: ErrorMessages.CONFLICT_RESPONSE_TEST_APPLICATION })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
-  @UseGuards(AuthnGuard) 
+  // @UseGuards(AuthnGuard) 
   @Post('student-test')
   saveStudentTest(@Headers('Authorization') request: any,@Body() data: CreateStudentTestDto) {
     const jwt = request.replace('Bearer ', '');
