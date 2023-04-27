@@ -72,13 +72,13 @@ export class StudentTestService {
     }
   }
 
-  async saveTotalScore(testId: string, studentId: string, totalScore: any ){
-    return await this.studentTestRepository
+  saveTotalScore(testId: string, studentId: string, totalScore: number ){
+    return this.studentTestRepository
     .createQueryBuilder()
     .update(StudentTest)
     .set({ total_score: totalScore })
-    .where( "student_id = :s_id", { s_id: studentId } ) 
-    .andWhere("test_id = :t_id", { t_id: testId })
+    .where( "student_id = :studentId", { studentId } ) 
+    .andWhere("test_id = :testId", { testId })
     .execute();
   }
 

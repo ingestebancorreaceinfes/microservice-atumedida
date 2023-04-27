@@ -11,8 +11,8 @@ export class TestApplicationService {
     @InjectRepository(TestApplication) private readonly testApplicationRepository: Repository<TestApplication>
   ){}
 
-  async findTypeScore(testId: string) {
-    const { typescore_id } = await this.testApplicationRepository.findOne({ where: { test_id: testId }  });
+  async findTypeScore(test_id: string) {
+    const { typescore_id } = await this.testApplicationRepository.findOne({ where: { test_id }  });
     return typescore_id;
   }
   

@@ -11,7 +11,7 @@ export class TestDetailService {
     
     async findQuestionAnswers(testId: string){
         const query = await this.testDetailRepository.query(
-            `select td."order" "order",td.question_id,q.answer,
+            `select td."order" "order",td.question_id,q.answer
             from tests_details td
             inner join questions q on q.id = td.question_id
             where td.test_id = '${testId}'
