@@ -73,6 +73,9 @@ export class StudentTestService {
   }
 
   async saveTotalScore(testId: string, studentId: string, totalScore: number ){
+    console.log('testId',testId);
+    console.log('studentId',studentId);
+    console.log('totalScore',totalScore);
     return await this.studentTestRepository
     .createQueryBuilder()
     .update(StudentTest)
