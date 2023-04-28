@@ -48,6 +48,7 @@ export class StudentTestService {
         .where( "student_id = :studentId", { studentId } ) 
         .andWhere("test_id = :testId", { testId })
         .execute();
+        this.calculateTestScore(studentId.toString(), testId);
         const response = {
           "status-code": 201,
           "state": "realizada",
@@ -67,7 +68,7 @@ export class StudentTestService {
     return studentTest;
   }
 
-  async calculateTestScore(testId: string, studentId:string){
+  async calculateTestScore(studentId:string, testId: string, ){
     const typeTestScore = await this.testApplicationService.findTypeScore(testId);
     
     switch(typeTestScore){
