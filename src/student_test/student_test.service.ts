@@ -62,7 +62,7 @@ export class StudentTestService {
                   goodAnswers += 1; 
                 }
             }
-
+            console.log(goodAnswers);
             this.saveTotalScore(testId, studentId.toString(), goodAnswers);
             break;
         case 2:
