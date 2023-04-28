@@ -100,7 +100,9 @@ export class StudentTestService {
 
   async saveTotalScore(studentId: string, testId: string, totalScore: number ){
     try{
-      console.log();
+      console.log('studentId',studentId);
+      console.log('testId',testId);
+      console.log('totalScore',totalScore);
       const updateTotalScore = await this.studentTestRepository
       .createQueryBuilder()
       .update(StudentTest)
