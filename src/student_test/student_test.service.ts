@@ -31,7 +31,7 @@ export class StudentTestService {
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
         this.studentTestRepository.save(newStudentTest);
         
-        this.calculateTestScore(newStudentTest.test_id,newStudentTest.student_id);
+        this.calculateTestScore(studentId.toString(), createStudentTestDto.test_id );
         
         const response = {
           "status-code": 201,
