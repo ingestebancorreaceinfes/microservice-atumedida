@@ -83,7 +83,7 @@ export class StudentTestService {
                 }
             }
             console.log(goodAnswers);
-            this.saveTotalScore(testId, studentId.toString(), goodAnswers);
+            this.saveTotalScore(studentId.toString(), testId, goodAnswers);
             break;
         case 2:
             break;
@@ -92,7 +92,7 @@ export class StudentTestService {
     }
   }
 
-  async saveTotalScore(testId: string, studentId: string, totalScore: number ){
+  async saveTotalScore(studentId: string, testId: string, totalScore: number ){
     try{
       const updateTotalScore = await this.studentTestRepository
       .createQueryBuilder()
@@ -109,9 +109,6 @@ export class StudentTestService {
       logger.error(error);
       console.log(error);
     }
-  
-    
-
   }
 
 }
