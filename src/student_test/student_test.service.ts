@@ -24,7 +24,7 @@ export class StudentTestService {
       const studentId = await this.studentService.getStudentId(token);
       const studentHasTestApplied = await this.findStudentTest(studentId.toString(),createStudentTestDto.test_id);
       
-      if(!studentHasTestApplied){
+      if(!studentHasTestApplied){        
         const newStudentTest = this.studentTestRepository.create(createStudentTestDto);
         newStudentTest.student_id = studentId.toString();
         StudentTestModule.globalResponses = newStudentTest.responses;//2. Utilizar variable global en el servicio
@@ -89,7 +89,7 @@ export class StudentTestService {
                 }
             }
             console.log(goodAnswers);
-            this.saveTotalScore(studentId.toString(), testId, goodAnswers);
+            this.saveTotalScore(studentId, testId, goodAnswers);
             break;
         case 2:
             break;
@@ -100,12 +100,13 @@ export class StudentTestService {
 
   async saveTotalScore(studentId: string, testId: string, totalScore: number ){
     try{
+      console.log();
       const updateTotalScore = await this.studentTestRepository
       .createQueryBuilder()
       .update(StudentTest)
       .set({ total_score: totalScore })
-      .where( "student_id = :studentId", { studentId } ) 
-      .andWhere("test_id = :testId", { testId })
+      .where( "student_id = :s_id", { s_id: studentId } ) 
+      .andWhere("test_id = :t_id", { t_id: testId })
       .execute();
 
       console.log('updateTotalScore',updateTotalScore);
