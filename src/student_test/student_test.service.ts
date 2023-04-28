@@ -1,9 +1,8 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateStudentTestDto } from './dto/create-student_test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentTest } from './entities/student_test.entity';
 import { Repository } from 'typeorm';
-import { ErrorMessages } from 'src/common/enum/error-messages.enum';
 import { StudentService } from 'src/student/student.service';
 import { StudentTestModule } from './student_test.module';
 import { SuccessMessages } from 'src/common/enum/success-messages.enum';
@@ -59,7 +58,6 @@ export class StudentTestService {
     }catch(error){
       const logger = new Logger('StudentTest');
       logger.error(error);
-      console.log(error);
     }
       
   }
@@ -95,20 +93,24 @@ export class StudentTestService {
   }
 
   async saveTotalScore(testId: string, studentId: string, totalScore: number ){
-    console.log('testId',testId);
-    console.log('studentId',studentId);
-    console.log('totalScore',totalScore);
-    const updateTotalScore = await this.studentTestRepository
-    .createQueryBuilder()
-    .update(StudentTest)
-    .set({ total_score: totalScore })
-    .where( "student_id = :studentId", { studentId } ) 
-    .andWhere("test_id = :testId", { testId })
-    .execute();
+    try{
+      const updateTotalScore = await this.studentTestRepository
+      .createQueryBuilder()
+      .update(StudentTest)
+      .set({ total_score: totalScore })
+      .where( "student_id = :studentId", { studentId } ) 
+      .andWhere("test_id = :testId", { testId })
+      .execute();
 
-    console.log('updateTotalScore',updateTotalScore);
-    return updateTotalScore;
-
+      console.log('updateTotalScore',updateTotalScore);
+      return updateTotalScore;
+    }catch(error){
+      const logger = new Logger('StudentTest');
+      logger.error(error);
+      console.log(error);
+    }
+  
+    
 
   }
 
