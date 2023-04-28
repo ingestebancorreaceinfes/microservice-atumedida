@@ -30,7 +30,9 @@ export class StudentTestService {
         StudentTestModule.globalResponses = newStudentTest.responses;//2. Utilizar variable global en el servicio
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
         this.studentTestRepository.save(newStudentTest);
+        
         this.calculateTestScore(newStudentTest.test_id,newStudentTest.student_id);
+        
         const response = {
           "status-code": 201,
           "state": "realizada",
@@ -48,7 +50,10 @@ export class StudentTestService {
         .where( "student_id = :studentId", { studentId } ) 
         .andWhere("test_id = :testId", { testId })
         .execute();
+        
+        StudentTestModule.globalResponses = createStudentTestDto.responses;
         this.calculateTestScore(studentId.toString(), testId);
+        
         const response = {
           "status-code": 201,
           "state": "realizada",
