@@ -29,7 +29,7 @@ export class StudentTestService {
         newStudentTest.student_id = studentId.toString();
         StudentTestModule.globalResponses = newStudentTest.responses;//2. Utilizar variable global en el servicio
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
-        // this.studentTestRepository.save(newStudentTest);
+        this.studentTestRepository.save(newStudentTest);
         this.calculateTestScore(newStudentTest.test_id,newStudentTest.student_id);
         const response = {
           "status-code": 201,
@@ -72,17 +72,15 @@ export class StudentTestService {
     }
   }
 
-  saveTotalScore(testId: string, studentId: string, totalScore: number ){
-    console.log('testId',testId);
-    console.log('studentId',studentId);
-    console.log('totalScore',totalScore);
-    // return this.studentTestRepository
-    // .createQueryBuilder()
-    // .update(StudentTest)
-    // .set({ total_score: totalScore })
-    // .where( "student_id = :studentId", { studentId } ) 
-    // .andWhere("test_id = :testId", { testId })
-    // .execute();
+  async saveTotalScore(testId: string, studentId: string, totalScore: number ){
+    return await this.studentTestRepository
+    .createQueryBuilder()
+    .update(StudentTest)
+    .set({ total_score: totalScore })
+    .where( "student_id = :studentId", { studentId } ) 
+    .andWhere("test_id = :testId", { testId })
+    .execute();
+
   }
 
 }
