@@ -31,7 +31,7 @@ export class StudentTestService {
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
         await this.studentTestRepository.save(newStudentTest)
         .then( savedEntity => {
-          console.log(savedEntity);
+          // console.log(savedEntity);
           this.calculateTestScore(studentId.toString(), createStudentTestDto.test_id );//Despues que la entidad a sido guardada
 
           const response = {
@@ -92,7 +92,7 @@ export class StudentTestService {
                   goodAnswers += 1; 
                 }
             }
-            console.log(goodAnswers);
+            // console.log(goodAnswers);
             this.saveTotalScore(studentId, testId, goodAnswers);
             break;
         case 2:
@@ -104,9 +104,6 @@ export class StudentTestService {
 
   async saveTotalScore(studentId: string, testId: string, totalScore: number ){
     try{
-      console.log('studentId',studentId);
-      console.log('testId',testId);
-      console.log('totalScore',totalScore);
       const updateTotalScore = await this.studentTestRepository
       .createQueryBuilder()
       .update(StudentTest)
