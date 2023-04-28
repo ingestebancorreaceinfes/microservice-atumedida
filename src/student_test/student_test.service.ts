@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { CreateStudentTestDto } from './dto/create-student_test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentTest } from './entities/student_test.entity';
@@ -21,6 +21,7 @@ export class StudentTestService {
   ){}
 
   async saveStudentTest(token: string, createStudentTestDto: CreateStudentTestDto) {
+    try{
       const studentId = await this.studentService.getStudentId(token);
       const studentHasTestApplied = await this.findStudentTest(studentId.toString(),createStudentTestDto.test_id);
       
@@ -38,18 +39,29 @@ export class StudentTestService {
         }
         return JSON.stringify(response);
       }else{
-        const testID = createStudentTestDto.test_id;
-        const responses = JSON.stringify(createStudentTestDto.responses);
-        
-        const updateStudentTest = await this.studentTestRepository
-        .createQueryBuilder()
+        const testId = createStudentTestDto.test_id;
+        const questionResponses = JSON.stringify(createStudentTestDto.responses);
+ 
+        await this.studentTestRepository
+        .createQueryBuilder('')
         .update(StudentTest)
-        .set({ started_at: createStudentTestDto.started_at, ended_at: createStudentTestDto.ended_at, responses })
+        .set({ started_at: createStudentTestDto.started_at, ended_at: createStudentTestDto.ended_at, responses: questionResponses })
         .where( "student_id = :studentId", { studentId } ) 
-        .andWhere("test_id = :testId", { testID })
+        .andWhere("test_id = :testId", { testId })
         .execute();
-        return updateStudentTest
+        const response = {
+          "status-code": 201,
+          "state": "realizada",
+          "message": SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST
+        }
+        return JSON.stringify(response);
       }      
+    }catch(error){
+      const logger = new Logger('StudentTest');
+      logger.error(error);
+      console.log(error);
+    }
+      
   }
 
   async findStudentTest(student_id: string, test_id: string){
