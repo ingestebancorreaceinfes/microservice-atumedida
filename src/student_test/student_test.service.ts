@@ -24,12 +24,12 @@ export class StudentTestService {
       const studentId = await this.studentService.getStudentId(token);
       const studentHasTestApplied = await this.findStudentTest(studentId.toString(),createStudentTestDto.test_id);
       
-      if(!studentHasTestApplied){
+      // if(!studentHasTestApplied){
         const newStudentTest = this.studentTestRepository.create(createStudentTestDto);
         newStudentTest.student_id = studentId.toString();
         StudentTestModule.globalResponses = newStudentTest.responses;//2. Utilizar variable global en el servicio
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
-        // this.studentTestRepository.save(newStudentTest);
+        //this.studentTestRepository.save(newStudentTest);
         this.calculateTestScore(newStudentTest.test_id,newStudentTest.student_id);
         const response = {
           "status-code": 201,
@@ -37,9 +37,9 @@ export class StudentTestService {
           "message": SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST
         }
         return JSON.stringify(response);
-      }else{
-        throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE_TEST_APPLICATION);
-      }      
+      // }else{
+      //   throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE_TEST_APPLICATION);
+      // }      
   }
 
   async findStudentTest(student_id: string, test_id: string){
@@ -84,7 +84,7 @@ export class StudentTestService {
     .andWhere("test_id = :testId", { testId })
     .execute();
 
-    console.log(updateTotalScore);
+    console.log('updateTotalScore',updateTotalScore);
     return updateTotalScore;
 
 
