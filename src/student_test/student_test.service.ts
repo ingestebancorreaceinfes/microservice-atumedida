@@ -29,16 +29,19 @@ export class StudentTestService {
         newStudentTest.student_id = studentId.toString();
         StudentTestModule.globalResponses = newStudentTest.responses;//2. Utilizar variable global en el servicio
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
-        this.studentTestRepository.save(newStudentTest);
-        
-        this.calculateTestScore(studentId.toString(), createStudentTestDto.test_id );
-        
-        const response = {
-          "status-code": 201,
-          "state": "realizada",
-          "message": SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST
-        }
-        return JSON.stringify(response);
+        await this.studentTestRepository.save(newStudentTest)
+        .then( savedEntity => {
+          console.log(savedEntity);
+          this.calculateTestScore(studentId.toString(), createStudentTestDto.test_id );//Despues que la entidad a sido guardada
+
+          const response = {
+            "status-code": 201,
+            "state": "realizada",
+            "message": SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST
+          }
+  
+          return JSON.stringify(response);
+        });
       }else{
         const testId = createStudentTestDto.test_id;
         const questionResponses = JSON.stringify(createStudentTestDto.responses);
@@ -59,8 +62,9 @@ export class StudentTestService {
           "state": "realizada",
           "message": SuccessMessages.REGISTER_SUCCESS_STUDENT_TEST
         }
+
         return JSON.stringify(response);
-      }      
+      }    
     }catch(error){
       const logger = new Logger('StudentTest');
       logger.error(error);
@@ -116,7 +120,6 @@ export class StudentTestService {
     }catch(error){
       const logger = new Logger('StudentTest');
       logger.error(error);
-      console.log(error);
     }
   }
 
