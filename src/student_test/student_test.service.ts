@@ -77,7 +77,7 @@ export class StudentTestService {
     return studentTest;
   }
 
-  async calculateTestScore(studentId:string, testId: string, ){
+  async calculateTestScore(studentId:string, testId: string ){
     const typeTestScore = await this.testApplicationService.findTypeScore(testId);
     
     switch(typeTestScore){
