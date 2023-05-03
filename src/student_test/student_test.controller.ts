@@ -32,7 +32,7 @@ export class StudentTestController {
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
   @UseGuards(AuthnGuard) 
-  @Get('student/:id/test/results')
+  @Get('student/test/:id/results')
   testResults(@Param('id') id: string, @Headers('Authorization') request: any) {
     const jwt = request.replace('Bearer ', '');
     return this.studentTestService.testResults(jwt,id);
