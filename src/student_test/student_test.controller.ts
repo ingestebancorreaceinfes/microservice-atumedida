@@ -1,7 +1,7 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
 import { StudentTestService } from './student_test.service';
 import { CreateStudentTestDto } from './dto/create-student_test.dto';
-import { ApiBadRequestResponse, ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiHeader, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
 import { StudentTestSchema } from './schema/student-test.schema';
 import { Headers } from '@nestjs/common';
@@ -24,6 +24,18 @@ export class StudentTestController {
   saveStudentTest(@Headers('Authorization') request: any,@Body() data: CreateStudentTestDto) {
     const jwt = request.replace('Bearer ', '');
     return this.studentTestService.saveStudentTest(jwt,data);
+  }
+
+  @ApiOkResponse({ description: SuccessMessages.OK_RESPONSE })
+  @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
+  @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
+  @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
+  @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
+  @UseGuards(AuthnGuard) 
+  @Get('student/:id/test/results')
+  testResults(@Param('id') id: string, @Headers('Authorization') request: any) {
+    const jwt = request.replace('Bearer ', '');
+    return this.studentTestService.testResults(jwt,id);
   }
 
 }

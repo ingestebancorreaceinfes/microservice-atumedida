@@ -8,7 +8,7 @@ import { StudentTestModule } from './student_test.module';
 import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 import { TestApplicationService } from 'src/test_application/test_application.service';
 import { TestDetailService } from 'src/test_detail/test_detail.service';
- 
+
 @Injectable()
 export class StudentTestService {
 
@@ -29,10 +29,12 @@ export class StudentTestService {
         newStudentTest.student_id = studentId.toString();
         StudentTestModule.globalResponses = newStudentTest.responses;//2. Utilizar variable global en el servicio
         newStudentTest.responses = JSON.stringify(newStudentTest.responses);
+
         await this.studentTestRepository.save(newStudentTest)
-        .then( savedEntity => {
-          // console.log(savedEntity);
-          this.calculateTestScore(studentId.toString(), createStudentTestDto.test_id );//Despues que la entidad a sido guardada
+        .then( async savedEntity => { //Despues que la entidad a sido guardada
+          const { goodAnswers } = await this.calculateTestScore(studentId.toString(), createStudentTestDto.test_id);
+        
+          this.saveTotalScore(studentId.toString(), newStudentTest.test_id, goodAnswers);
 
           const response = {
             "status-code": 201,
@@ -55,8 +57,10 @@ export class StudentTestService {
         .execute();
         
         StudentTestModule.globalResponses = createStudentTestDto.responses;
-        this.calculateTestScore(studentId.toString(), testId);
-        
+
+        const { goodAnswers } = await this.calculateTestScore(studentId.toString(), testId);
+        this.saveTotalScore(studentId.toString(), testId, goodAnswers);
+
         const response = {
           "status-code": 201,
           "state": "realizada",
@@ -79,22 +83,36 @@ export class StudentTestService {
 
   async calculateTestScore(studentId:string, testId: string ){
     const typeTestScore = await this.testApplicationService.findTypeScore(testId);
+    const correctAnswers = await this.testDetailService.findQuestionAnswers(testId);
+    const selectedAnswers = StudentTestModule.globalResponses;
+    const validatedAnswers = [];
     
     switch(typeTestScore){
         case 1:
-            const correctAnswers = await this.testDetailService.findQuestionAnswers(testId);
-            const selectedAnswers = StudentTestModule.globalResponses;
-
             let goodAnswers = 0;
 
-            for (let i = 0; i < correctAnswers.length; i++) {
-                if (correctAnswers[i].answer === selectedAnswers[i].option) {
-                  goodAnswers += 1; 
-                }
+            for (const i in correctAnswers) { //Iterar sobre los indices del Array
+              if (correctAnswers[i].answer === selectedAnswers[i].option) {
+                goodAnswers += 1;
+                validatedAnswers.push({
+                  "order": selectedAnswers[i].order,
+                  "student_option": selectedAnswers[i].option,
+                  "is_valid": true
+                });
+              }else{
+                validatedAnswers.push({
+                  "order": selectedAnswers[i].order,
+                  "student_option": selectedAnswers[i].option,
+                  "is_valid": false
+                });
+              }
+              
             }
-            // console.log(goodAnswers);
-            this.saveTotalScore(studentId, testId, goodAnswers);
-            break;
+            
+            return {
+              goodAnswers,
+              validatedAnswers
+            };
         case 2:
             break;
         default:
@@ -116,6 +134,47 @@ export class StudentTestService {
       return updateTotalScore;
     }catch(error){
       const logger = new Logger('StudentTest');
+      logger.error(error);
+    }
+  }
+
+  async testResults(token: string, testId: string){
+    try{
+      const studentId = await this.studentService.getStudentId(token);
+
+      const query = `
+        SELECT 
+          t.name, 
+          t.numberofquestion as total_questions,
+          st.total_score, 
+          st.started_at, 
+          st.ended_at, 
+          COALESCE(CASE ta.typescore_id WHEN 1 THEN 'ACIERTO' ELSE 'PUNTAJE' END, '') AS score_type,
+          st.responses
+        FROM 
+          students_tests st 
+          INNER JOIN tests t ON st.test_id = t.id
+          INNER JOIN tests_applications ta on st.test_application_id = ta.id  
+        WHERE 
+          st.test_id = '${testId}'
+        `;
+        
+      const result = await this.studentTestRepository.query(query);
+
+      if (result && result.length > 0) {
+        const studentTest = result[0];
+        const { responses, ...rest } = studentTest;
+        StudentTestModule.globalResponses = responses;
+
+        const { validatedAnswers } = await this.calculateTestScore(studentId.toString(),testId);
+
+        return {
+          ...rest,
+          "questions": validatedAnswers
+        }
+      }
+    }catch(error){
+      const logger = new Logger();
       logger.error(error);
     }
   }
