@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param, NotFoundException } from '@nestjs/common';
 import { StudentTestService } from './student_test.service';
 import { CreateStudentTestDto } from './dto/create-student_test.dto';
 import { ApiBadRequestResponse, ApiHeader, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -31,11 +31,15 @@ export class StudentTestController {
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
-  @UseGuards(AuthnGuard) 
+  //@UseGuards(AuthnGuard) 
   @Get('student/test/:id/results')
-  testResults(@Param('id') id: string, @Headers('Authorization') request: any) {
+  async testResults(@Param('id') id: string, @Headers('Authorization') request: any) {
     const jwt = request.replace('Bearer ', '');
-    return this.studentTestService.testResults(jwt,id);
+
+    const testResults = await this.studentTestService.testResults(jwt,id);
+
+    if(!testResults) throw new NotFoundException(`There are no associated results with test ${id}`);
+    return testResults;
   }
 
 }
