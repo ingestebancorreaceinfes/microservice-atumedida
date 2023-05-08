@@ -85,11 +85,10 @@ export class StudentTestService {
     const correctAnswers = await this.testDetailService.findQuestionAnswers(testId);
     const selectedAnswers = StudentTestModule.globalResponses;
     const validatedAnswers = [];
-    
+    let goodAnswers = 0;
+
     switch(typeTestScore){
         case 1:
-            let goodAnswers = 0;
-
             for (const i in correctAnswers) { //Iterar sobre los indices del Array
               if (correctAnswers[i].answer === selectedAnswers[i].option) {
                 goodAnswers += 1;
@@ -181,7 +180,7 @@ export class StudentTestService {
       delete scoresCompetences["successscore"];
       return scoresCompetences;
     });
-    console.log(competencesNames);
+
     promedioExito = maxScore/testResults.length;
     promedioEstudianteExito = studentScore/testResults.length;
     promedio = promedioEstudianteExito*100/promedioExito;
