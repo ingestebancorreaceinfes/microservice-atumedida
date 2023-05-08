@@ -4,13 +4,14 @@ import { Headers } from '@nestjs/common';
 import { AuthnGuard } from 'src/auth/guards/auth.guard';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
+import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 
 @ApiTags('Test')
 @Controller('')
 export class TestController {
   constructor(private readonly testService: TestService) {}
 
-  @ApiResponse({ status: 200, description: ErrorMessages.OK_RESPONSE })
+  @ApiResponse({ status: 200, description: SuccessMessages.OK_RESPONSE })
   @ApiResponse({ status: 400, description: ErrorMessages.BAD_REQUEST })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })

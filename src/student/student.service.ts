@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { States, Cities, Student } from './entities/index';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { documentTypes, grades } from './data/index';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ErrorMessages } from 'src/common/enum/error-messages.enum';
+import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 
 @Injectable()
 export class StudentService {
@@ -52,25 +53,38 @@ export class StudentService {
 
     
     async studentRegister(token: string, createStudentDto: CreateStudentDto) {
+        const data = await this.getUsernameAndUUID(token);
+        const isRegister = await this.findStudentByUUID(data.uuid);
+        if(!isRegister) {
+            const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
+            newStudent.user_uuid = data.uuid;
+            newStudent.email = data.username;
+            this.studentRepository.save(newStudent);
+            const response = {
+                "status": 201,
+                "message": SuccessMessages.CREATED
+            }
+            return JSON.stringify(response);
+        }else{  
+            throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
+        }
+    }
+
+    async getUsernameAndUUID(token: string){
         type Payload = {
             uuid: string,
-            username: string,
-            name: string
+            username: string
         }
+
         const data = this.jwtService.decode(token);
         const { uuid, username } = data as Payload;
 
         if(this.checkIfValidUUID(uuid)){
-            const isRegister = await this.findStudentByUUID(uuid);
-            if(!isRegister) {
-                const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
-                newStudent.user_uuid = uuid;
-                newStudent.email = username;
-                this.studentRepository.save(newStudent);
-                return newStudent.id;
-            }else{  
-                throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
+            const data = {
+                uuid, 
+                username
             }
+            return data;
         }else{
             const logger = new Logger('TestService');
             logger.error('uuid does not a valid UUID');
@@ -78,6 +92,27 @@ export class StudentService {
         }
     }
 
+    async getStudentId(token: string){
+        type Payload = {
+            uuid: string,
+            username: string
+        }
+
+        const data = this.jwtService.decode(token);
+
+        const { uuid } = data as Payload;
+
+        if(this.checkIfValidUUID(uuid)){
+            const studentID = await this.findStudentByUUID(uuid);
+            return studentID;
+        }else{
+            const logger = new Logger('TestDetail');
+            logger.error('uuid does not a valid UUID');
+            throw new BadRequestException(ErrorMessages.BAD_REQUEST);
+        }
+    }
+
+    
     checkIfValidUUID(str: string) {
         // Regular expression to check if string is a valid UUID
         const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
@@ -85,8 +120,9 @@ export class StudentService {
         return regexExp.test(str);
     }
 
-    async findStudentByUUID(user_uuid: string) {
-        const student = await this.studentRepository.findOne( { where: {user_uuid}} );
-        return student;
+    async findStudentByUUID(user_uuid : string){
+        const { id } = await this.studentRepository.findOne({ where: { user_uuid } });
+        if(!id) throw new BadRequestException('Not found student');
+        return id;
     }
 }
