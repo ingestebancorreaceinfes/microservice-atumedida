@@ -223,7 +223,7 @@ export class StudentTestService {
       SELECT 
         t.name, 
         t.numberofquestion as total_questions,
-        TRUNC(st.total_score,2) as total_score, 
+        ROUND(st.total_score,2) as total_score, 
         st.started_at, 
         st.ended_at, 
         COALESCE(CASE ta.typescore_id WHEN 1 THEN 'ACIERTO' ELSE 'PUNTAJE' END, '') AS score_type,
