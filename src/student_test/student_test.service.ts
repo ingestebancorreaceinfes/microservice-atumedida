@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateStudentTestDto } from './dto/create-student_test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentTest } from './entities/student_test.entity';
@@ -8,6 +8,7 @@ import { StudentTestModule } from './student_test.module';
 import { SuccessMessages } from 'src/common/enum/success-messages.enum';
 import { TestApplicationService } from 'src/test_application/test_application.service';
 import { TestDetailService } from 'src/test_detail/test_detail.service';
+import { ErrorMessages } from '../common/enum/error-messages.enum';
 
 @Injectable()
 export class StudentTestService {
@@ -106,9 +107,9 @@ export class StudentTestService {
               }
               
             }
-            const competencesNames = {}
-            const masteredTask = []
-            const taskNotMastered = []
+            const competencesNames = null;
+            const masteredTask = null;
+            const taskNotMastered = null;
             return {
               goodAnswers,
               validatedAnswers,
@@ -124,18 +125,21 @@ export class StudentTestService {
   }
 
   async testMeasureResult(studentId:string,testId:string,validatedAnswers:Array<any>,goodAnswers:number){
-    const results = await this.findStudentTest(studentId,testId);
+    const results = await this.findStudentTest(studentId,testId);    
     const testResults = await this.findTestResults(testId);
+    if(!results || !testResults)
+      throw new NotFoundException(ErrorMessages.NOT_FOUND);
     let maxScore = 0;
     let studentScore = 0;
     let successAverage = 0;
     let studentSuccessAverage = 0;
     let average = 0;
-    let competencesNames = {};
-    let masteredTask = [];
-    let taskNotMastered = []
+    let competencesNames:object = {};
+    let masteredTask:Array<any> = null;
+    let taskNotMastered:Array<any> = null;
     const objStudentResponses:Array<any> = results.responses as any as Array<any>;
     const objTestResults:Array<any> = testResults as any as Array<any>;
+    if(objTestResults) competencesNames={};
     objTestResults.forEach((value:any) => competencesNames[value.competence]={});
     objStudentResponses.forEach((studentResponse:any) => { 
       let isValid=false;
@@ -151,6 +155,7 @@ export class StudentTestService {
         competencesNames[testResult.competence]['maxscore']+=Math.exp(testResult.measure)/(1+Math.exp(testResult.measure));
         if(studentResponse.option === testResult.answer){
           isValid=true;
+          if(!masteredTask) masteredTask = [];
           masteredTask.push({name:testResult.task})
           if(!competencesNames[testResult.competence].hasOwnProperty('successscore')){
             competencesNames[testResult.competence]['successscore']=0
@@ -159,6 +164,7 @@ export class StudentTestService {
           studentScore = studentScore + (Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)));
         }
         else{
+          if(!taskNotMastered) taskNotMastered = [];
           taskNotMastered.push({name:testResult.task})
         }
         validatedAnswers.push({
