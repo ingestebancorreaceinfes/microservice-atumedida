@@ -164,7 +164,7 @@ export class StudentTestService {
         validatedAnswers.push({
           "order": studentResponse.order,
           "student_option": studentResponse.option,
-          "is_valid": false
+          "is_valid": isValid
         });
       }
     });
@@ -173,7 +173,7 @@ export class StudentTestService {
       const maxScoreCompetence = scoresCompetences.maxscore/scoresCompetences.numberofquestions;
       const successScoreCompetence = scoresCompetences.successscore/scoresCompetences.numberofquestions;
       const scoreCompetenceAverage = successScoreCompetence*100/maxScoreCompetence;
-      scoresCompetences["score"]=scoreCompetenceAverage.toFixed(2);  
+      scoresCompetences["score"]=isNaN(scoreCompetenceAverage)? "0" :scoreCompetenceAverage.toFixed(2);  
       scoresCompetences["name"]=value;      
       delete scoresCompetences["maxscore"];
       delete scoresCompetences["numberofquestions"];
