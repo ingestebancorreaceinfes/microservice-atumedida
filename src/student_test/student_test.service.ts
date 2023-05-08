@@ -137,8 +137,8 @@ export class StudentTestService {
     const objStudentResponses:Array<any> = results.responses as any as Array<any>;
     const objTestResults:Array<any> = testResults as any as Array<any>;
     objTestResults.forEach((value:any) => competencesNames[value.competence]={});
-    let isValid=false;
     objStudentResponses.forEach((studentResponse:any) => { 
+      let isValid=false;
       const testResult = objTestResults.find(testresult => testresult.order==studentResponse.order);
       if(testResult){
         maxScore = maxScore + (Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)));
