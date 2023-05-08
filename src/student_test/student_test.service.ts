@@ -128,9 +128,9 @@ export class StudentTestService {
     const testResults = await this.findTestResults(testId);
     let maxScore = 0;
     let studentScore = 0;
-    let promedioExito = 0;
-    let promedioEstudianteExito = 0;
-    let promedio = 0;
+    let successAverage = 0;
+    let studentSuccessAverage = 0;
+    let average = 0;
     let competencesNames = {};
     let masteredTask = [];
     let taskNotMastered = []
@@ -168,23 +168,23 @@ export class StudentTestService {
         });
       }
     });
+    
+
+    successAverage = maxScore/testResults.length;
+    studentSuccessAverage = studentScore/testResults.length;
+    average = Number((studentSuccessAverage*100/successAverage).toFixed(2));
     competencesNames = Object.keys(competencesNames).map(value => {
       const scoresCompetences = competencesNames[value]
-      const maxScoreCompetence = scoresCompetences.maxscore/scoresCompetences.numberofquestions;
-      const successScoreCompetence = scoresCompetences.successscore/scoresCompetences.numberofquestions;
-      const scoreCompetenceAverage = successScoreCompetence*100/maxScoreCompetence;
-      scoresCompetences["score"]=isNaN(scoreCompetenceAverage)? "0" :scoreCompetenceAverage.toFixed(2);  
+      const successScoreCompetence = scoresCompetences.successscore/testResults.length;
+      const scoreCompetenceAverage = successScoreCompetence*100/successAverage;
+      scoresCompetences["score"]=isNaN(scoreCompetenceAverage)? 0 :Number(scoreCompetenceAverage.toFixed(2));  
       scoresCompetences["name"]=value;      
       delete scoresCompetences["maxscore"];
       delete scoresCompetences["numberofquestions"];
       delete scoresCompetences["successscore"];
       return scoresCompetences;
     });
-
-    promedioExito = maxScore/testResults.length;
-    promedioEstudianteExito = studentScore/testResults.length;
-    promedio = promedioEstudianteExito*100/promedioExito;
-    goodAnswers = promedio
+    goodAnswers = average
     return {
       goodAnswers,
       validatedAnswers,
