@@ -23,7 +23,7 @@ export class TestDetailService {
 
     async getResults(testId: string) {
         const query = await this.testDetailRepository.query(
-            `select td."order" "order",td.question_id,q.answer,
+            `select td."order" "order",td.question_id,q.answer,q.measure,
             (select c.name from competences c where c.id = q.competence_id) competence,
             (select co.name from components co where co.id = q.component_id) component,
             (select tas.name from tasks tas where tas.id = q.task_id) task,
@@ -36,5 +36,10 @@ export class TestDetailService {
         );
 
         return query;
+    }
+
+    async getResultsWithQuestionsDetails(test_id:string){
+        const resultsByStudentTest = await this.testDetailRepository.find({ relations:['questions'] , where: { test_id:'bffa81e7-77d4-42d5-ac65-5ffb040de5cd' }});      
+        return resultsByStudentTest;
     }
 }

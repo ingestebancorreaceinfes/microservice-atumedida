@@ -40,6 +40,5 @@ export class StudentTestController {
 
     if(!testResults) throw new NotFoundException(`There are no associated results with test ${id}`);
     return testResults;
-  }
-
+  }  
 }

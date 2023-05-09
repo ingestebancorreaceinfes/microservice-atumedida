@@ -4,10 +4,11 @@ import { TestDetailController } from './test_detail.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TestDetail } from './entities/test_detail.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { Question } from '../questions/entities/question.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TestDetail]),
+    TypeOrmModule.forFeature([TestDetail,Question]),
     AuthModule,
   ],
   controllers: [TestDetailController],
