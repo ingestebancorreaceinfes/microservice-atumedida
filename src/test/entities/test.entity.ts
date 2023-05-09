@@ -15,4 +15,7 @@ export class Test {
     @Column('int4')
     numberofquestion: number;
 
+    @Column('text')
+    uri_image: string;
+
 }

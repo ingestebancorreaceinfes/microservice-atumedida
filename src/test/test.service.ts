@@ -26,7 +26,7 @@ export class TestService {
     if(this.studentService.checkIfValidUUID(uuid)){
       const studentID = await this.studentService.findStudentByUUID(uuid);
       const query = `
-        SELECT vtaa.id as test_application_id,vtaa.test_id, vtaa.test_name, vtaa.test_numberofquestions, 
+        SELECT vtaa.id as test_application_id,vtaa.test_id, vtaa.test_name, vtaa.test_numberofquestions, vtaa.uri_image,
         case
           when st.started_at is null then vtaa.start_at else st.started_at 
           end as started_at, 
