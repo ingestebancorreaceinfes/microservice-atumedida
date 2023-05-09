@@ -214,7 +214,6 @@ export class StudentTestService {
       .andWhere("test_id = :t_id", { t_id: testId })
       .execute();
 
-      console.log('updateTotalScore',updateTotalScore);
       return updateTotalScore;
     }catch(error){
       const logger = new Logger('StudentTest');
