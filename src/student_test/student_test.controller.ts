@@ -29,6 +29,7 @@ export class StudentTestController {
   @ApiOkResponse({ description: SuccessMessages.OK_RESPONSE })
   @ApiResponse({ status: 401, description: ErrorMessages.NOT_VALID_TOKEN })
   @ApiResponse({ status: 403, description: ErrorMessages.FORBIDDEN })
+  @ApiResponse({ status: 404, description: ErrorMessages.NOT_FOUND })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
   @UseGuards(AuthnGuard) 
@@ -38,7 +39,7 @@ export class StudentTestController {
 
     const testResults = await this.studentTestService.testResults(jwt,id);
 
-    if(!testResults) throw new NotFoundException(`There are no associated results with test ${id}`);
+    if(!testResults) throw new NotFoundException(ErrorMessages.NOT_FOUND);
     return testResults;
   }  
 }
