@@ -37,7 +37,8 @@ export class TestService {
           when st.started_at is null then 'pendiente' else 'realizada' 
           end as state, st.total_score 
         FROM vw_tests_applications_actives vtaa
-        LEFT JOIN students_tests st ON vtaa.test_id = st.test_id AND st.student_id = '${studentID}';`;
+        LEFT JOIN students_tests st ON vtaa.test_id = st.test_id AND st.student_id = '${studentID}'
+        order by vtaa.created_at desc;`;
 
         const testsStudent = await this.testRepository.query(query);
         return testsStudent;
