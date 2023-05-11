@@ -32,7 +32,7 @@ export class StudentTestController {
   @ApiResponse({ status: 404, description: ErrorMessages.NOT_FOUND })
   @ApiResponse({status:500, description: ErrorMessages.APPLICATION_ERROR})
   @ApiHeader({name: 'Authorization',description: 'Generated token by authentication microservice',required: true})
-  @UseGuards(AuthnGuard) 
+  // @UseGuards(AuthnGuard) 
   @Get('student/test/:id/results')
   async testResults(@Param('id') id: string, @Headers('Authorization') request: any) {
     const jwt = request.replace('Bearer ', '');
