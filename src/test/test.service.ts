@@ -17,13 +17,13 @@ export class TestService {
 
   async findStudentTest(token: string) {
     try{
-      console.log(token);
       type Payload = {
         uuid: string
       }
   
       const data = this.jwtService.decode(token);
       const { uuid } = data as Payload;
+      console.log(uuid);
   
       if(this.studentService.checkIfValidUUID(uuid)){
         const studentID = await this.studentService.findStudentByUUID(uuid);
