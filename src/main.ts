@@ -25,9 +25,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   //enable.cors
-  app.enableCors({
-    origin: 'https://testfactory.onrender.com/',
-  });
+  app.enableCors();
 
   await app.listen(process.env.PORT);
   logger.log(`Listen on port ${process.env.PORT}`)
