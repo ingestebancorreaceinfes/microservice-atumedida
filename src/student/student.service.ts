@@ -19,7 +19,7 @@ export class StudentService {
     ){}
     
     getDocumentTypes(): string {
-        return JSON.stringify(documentTypes);//Convierte un Object JS a JSON
+        return JSON.stringify(documentTypes);
     }
     
     getStates(): Promise<States[]> {
