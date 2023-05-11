@@ -17,6 +17,7 @@ export class TestService {
 
   async findStudentTest(token: string) {
     try{
+      console.log(token);
       type Payload = {
         uuid: string
       }
