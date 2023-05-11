@@ -122,6 +122,7 @@ export class StudentService {
 
     async findStudentByUUID(user_uuid : string){
         const { id } = await this.studentRepository.findOne({ where: { user_uuid } });
+        console.log('id',id);
         if(!id) throw new BadRequestException('Not found student');
         return id;
     }

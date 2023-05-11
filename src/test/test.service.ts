@@ -23,7 +23,6 @@ export class TestService {
   
       const data = this.jwtService.decode(token);
       const { uuid } = data as Payload;
-      console.log('uuid',uuid);
   
       if(this.studentService.checkIfValidUUID(uuid)){
         const studentID = await this.studentService.findStudentByUUID(uuid);
