@@ -26,7 +26,7 @@ async function bootstrap() {
 
   //enable.cors
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: 'https://testfactory.onrender.com/',
   });
 
   await app.listen(process.env.PORT);
