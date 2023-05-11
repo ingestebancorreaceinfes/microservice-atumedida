@@ -55,6 +55,7 @@ export class StudentService {
     async studentRegister(token: string, createStudentDto: CreateStudentDto) {
         try{
             const data = await this.getUsernameAndUUID(token);
+            console.log('data',data);
             const isRegister = await this.findStudentByUUID(data.uuid);
             if(!isRegister) {
                 const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
