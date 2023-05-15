@@ -73,8 +73,8 @@ export const grades = [
     },
     {
         "id": 12,
-        "name": "12°",
-        "alias": "12",
+        "name": "Graduado",
+        "alias": "Graduado",
         "isActive": true 
     }
 ];
