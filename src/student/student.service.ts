@@ -53,21 +53,28 @@ export class StudentService {
 
     
     async studentRegister(token: string, createStudentDto: CreateStudentDto) {
-        const data = await this.getUsernameAndUUID(token);
-        const isRegister = await this.findStudentByUUID(data.uuid);
-        if(!isRegister) {
-            const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
-            newStudent.user_uuid = data.uuid;
-            newStudent.email = data.username;
-            this.studentRepository.save(newStudent);
-            const response = {
-                "status": 201,
-                "message": SuccessMessages.CREATED
+        try{
+            const data = await this.getUsernameAndUUID(token);
+
+            const isRegister = await this.findStudentByUUID(data.uuid);
+            if(!isRegister) {
+                const newStudent = this.studentRepository.create(createStudentDto);//crea una instancia de la entidad y copia todos las propiedades en un objeto 
+                newStudent.user_uuid = data.uuid;
+                newStudent.email = data.username;
+                this.studentRepository.save(newStudent);
+                const response = {
+                    "status": 201,
+                    "message": SuccessMessages.CREATED
+                }
+                return JSON.stringify(response);
+            }else{  
+                throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
             }
-            return JSON.stringify(response);
-        }else{  
-            throw new ConflictException(ErrorMessages.CONFLICT_RESPONSE);
+        }catch(error){
+            const logger = new Logger();
+            logger.error(error);
         }
+        
     }
 
     async getUsernameAndUUID(token: string){
@@ -121,8 +128,7 @@ export class StudentService {
     }
 
     async findStudentByUUID(user_uuid : string){
-        const { id } = await this.studentRepository.findOne({ where: { user_uuid } });
-        if(!id) throw new BadRequestException('Not found student');
+        const { id } = await this.studentRepository.findOne({ where: { user_uuid } }) || {};
         return id;
     }
 }
