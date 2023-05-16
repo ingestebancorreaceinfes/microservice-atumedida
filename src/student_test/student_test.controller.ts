@@ -42,4 +42,75 @@ export class StudentTestController {
     if(!testResults) throw new NotFoundException(ErrorMessages.NOT_FOUND);
     return testResults;
   }  
+  @Get('testresult/:testid')
+  async testMeasureResult(@Param('id') id: string){
+    const results = await this.studentTestService.findStudentTest('c30c7eec-eae5-41ce-bc7c-4f719eabfda3','5206b98b-ac51-484e-9a2e-1b72310b435d');    
+    const testResults = await this.studentTestService.findTestResults('5206b98b-ac51-484e-9a2e-1b72310b435d');
+    if(!results || !testResults)
+      throw new NotFoundException(ErrorMessages.NOT_FOUND);
+    let maxScore = 0;
+    let studentScore = 0;
+    let promedioExito = 0;
+    let promedioEstudianteExito = 0;
+    let promedio = 0;
+    let competencesNames:object = null;
+    let masteredTask:Array<any> = null;
+    let taskNotMastered:Array<any> = null;
+    const objStudentResponses:Array<any> = results.responses as any as Array<any>;
+    const objTestResults:Array<any> = testResults as any as Array<any>;
+    if(objTestResults) competencesNames={};
+    objTestResults.forEach((value:any) => competencesNames[value.competence]={});
+    let isValid=false;
+    objStudentResponses.forEach((studentResponse:any) => { 
+      const testResult = objTestResults.find(testresult => testresult.order==studentResponse.order);
+      if(testResult){
+        maxScore = maxScore + (Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)));
+        
+        if(!competencesNames[testResult.competence].hasOwnProperty('maxscore')){
+          competencesNames[testResult.competence]['maxscore']=0;
+          competencesNames[testResult.competence]['numberofquestions']=0;
+        }
+        competencesNames[testResult.competence]['numberofquestions']+=1;
+        competencesNames[testResult.competence]['maxscore']+=Math.exp(testResult.measure)/(1+Math.exp(testResult.measure));
+        if(studentResponse.option === testResult.answer){
+          isValid=true;
+          if(!masteredTask) masteredTask = [];          
+          if (!masteredTask.find((el) => {             
+            return el.name === testResult.task; })){
+            masteredTask.push({name:testResult.task});
+          }
+          if(!competencesNames[testResult.competence].hasOwnProperty('successscore')){
+            competencesNames[testResult.competence]['successscore']=0
+          }
+          competencesNames[testResult.competence]['successscore']+=Math.exp(testResult.measure)/(1+Math.exp(testResult.measure));
+          studentScore = studentScore + (Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)));
+        }
+        else{
+          if(!taskNotMastered) taskNotMastered = [];
+          if (!taskNotMastered.find((el) => {             
+            return el.name === testResult.task; })){
+              taskNotMastered.push({name:testResult.task});
+          }
+        }
+      }
+    });
+    promedioExito = maxScore/testResults.length;
+    console.log(promedioExito, masteredTask);
+    promedioEstudianteExito = studentScore/testResults.length;
+    promedio = Number((promedioEstudianteExito*100/promedioExito).toFixed(2));
+    competencesNames = Object.keys(competencesNames).map(value => {
+      const scoresCompetences = competencesNames[value]
+      const successScoreCompetence = scoresCompetences.successscore/testResults.length;
+      const scoreCompetenceAverage = successScoreCompetence*100/promedioExito;
+      scoresCompetences["score"]=isNaN(scoreCompetenceAverage)? 0 :Number(scoreCompetenceAverage.toFixed(2));
+      scoresCompetences["name"]=value;      
+      delete scoresCompetences["maxscore"];
+      delete scoresCompetences["numberofquestions"];
+      delete scoresCompetences["successscore"];
+      return scoresCompetences
+      
+    })
+    console.log(competencesNames);
+   return {promedio,competencesNames,taskNotMastered,masteredTask};
+  }
 }

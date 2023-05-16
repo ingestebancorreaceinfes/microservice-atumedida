@@ -156,7 +156,10 @@ export class StudentTestService {
         if(studentResponse.option === testResult.answer){
           isValid=true;
           if(!masteredTask) masteredTask = [];
-          masteredTask.push({name:testResult.task})
+          if (!masteredTask.find((el) => {             
+            return el.name === testResult.task; })){
+            masteredTask.push({name:testResult.task});
+          }
           if(!competencesNames[testResult.competence].hasOwnProperty('successscore')){
             competencesNames[testResult.competence]['successscore']=0
           }
@@ -165,7 +168,10 @@ export class StudentTestService {
         }
         else{
           if(!taskNotMastered) taskNotMastered = [];
-          taskNotMastered.push({name:testResult.task})
+          if (!taskNotMastered.find((el) => {             
+            return el.name === testResult.task; })){
+              taskNotMastered.push({name:testResult.task});
+          }
         }
         validatedAnswers.push({
           "order": studentResponse.order,
