@@ -137,6 +137,8 @@ export class StudentTestService {
     let competencesNames:object = {};
     let masteredTask:Array<any> = null;
     let taskNotMastered:Array<any> = null;
+    let tasks:Array<any> = null;
+    let tasksNames:Array<any> = [];
     const objStudentResponses:Array<any> = results.responses as any as Array<any>;
     const objTestResults:Array<any> = testResults as any as Array<any>;
     if(objTestResults) competencesNames={};
@@ -153,25 +155,23 @@ export class StudentTestService {
         }
         competencesNames[testResult.competence]['numberofquestions']+=1;
         competencesNames[testResult.competence]['maxscore']+=Math.exp(testResult.measure)/(1+Math.exp(testResult.measure));
+        if(!tasks) tasks = [];  
+        if(tasksNames.filter(taskName=>{
+          return taskName===testResult.task
+        }).length==0){
+          tasksNames.push(testResult.task);
+        }
         if(studentResponse.option === testResult.answer){
-          isValid=true;
-          if(!masteredTask) masteredTask = [];
-          if (!masteredTask.find((el) => {             
-            return el.name === testResult.task; })){
-            masteredTask.push({name:testResult.task});
-          }
+          isValid=true;          
           if(!competencesNames[testResult.competence].hasOwnProperty('successscore')){
             competencesNames[testResult.competence]['successscore']=0
           }
           competencesNames[testResult.competence]['successscore']+=Math.exp(testResult.measure)/(1+Math.exp(testResult.measure));
           studentScore = studentScore + (Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)));
+          tasks.push({name:testResult.task, average:Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)),hit:true});
         }
         else{
-          if(!taskNotMastered) taskNotMastered = [];
-          if (!taskNotMastered.find((el) => {             
-            return el.name === testResult.task; })){
-              taskNotMastered.push({name:testResult.task});
-          }
+          tasks.push({name:testResult.task, average:Math.exp(testResult.measure)/(1+Math.exp(testResult.measure)),hit:false});
         }
         validatedAnswers.push({
           "order": studentResponse.order,
@@ -186,16 +186,43 @@ export class StudentTestService {
     studentSuccessAverage = studentScore/testResults.length;
     average = Number((studentSuccessAverage*100/successAverage).toFixed(2));
     competencesNames = Object.keys(competencesNames).map(value => {
-      const scoresCompetences = competencesNames[value]
+      const scoresCompetences = competencesNames[value];
+      const maxScoreCompetence = scoresCompetences.maxscore/scoresCompetences.numberofquestions;
+      const successNoGlobalCompetenceScore = scoresCompetences.successscore/scoresCompetences.numberofquestions;
+      const scoreNoGlobalCompetenceAverage = successNoGlobalCompetenceScore*100/maxScoreCompetence;
+      scoresCompetences["scoreNoGlobal"] = isNaN(scoreNoGlobalCompetenceAverage)? 0 :Number(scoreNoGlobalCompetenceAverage.toFixed(2));
       const successScoreCompetence = scoresCompetences.successscore/testResults.length;
       const scoreCompetenceAverage = successScoreCompetence*100/successAverage;
-      scoresCompetences["score"]=isNaN(scoreCompetenceAverage)? 0 :Number(scoreCompetenceAverage.toFixed(2));  
+      scoresCompetences["score"]=isNaN(scoreCompetenceAverage)? 0 :Number(scoreCompetenceAverage.toFixed(2));
       scoresCompetences["name"]=value;      
       delete scoresCompetences["maxscore"];
       delete scoresCompetences["numberofquestions"];
       delete scoresCompetences["successscore"];
       return scoresCompetences;
     });
+    tasksNames.forEach(taskName => {
+      let numberOfTasks=0;
+      let maxTaxScore = 0;
+      let successTaxScore = 0;
+      tasks.forEach((task)=>{
+        if(taskName === task.name) {
+          maxTaxScore+=task.average;
+          numberOfTasks++
+          if(task.hit) successTaxScore+=task.average;
+        }
+      })
+      const averageMaxTaskScore = maxTaxScore/numberOfTasks;
+      const averageSuccessTaskScore=successTaxScore/numberOfTasks;
+      let averageScore = averageSuccessTaskScore*100/averageMaxTaskScore;
+      if(averageScore <= 50){
+        if(!taskNotMastered) taskNotMastered=[]
+        taskNotMastered.push({name:taskName});
+      }
+      else{
+        if(!masteredTask) masteredTask=[]
+        masteredTask.push({name:taskName});
+      }
+    })
     goodAnswers = average
     return {
       goodAnswers,
